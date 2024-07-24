@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Table with Search and Pagination</title>
+    <link rel="stylesheet" href="key.css" />
+  </head>
+  <body>
+    <div class="container">
+      <input type="text" id="searchInput" placeholder="Search..." />
+
+      <table id="dataTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Facilities logs</th>
+            <th>Equipment Inventory</th>
+            <th><button id="deleteBtn">Delete</button></th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+      <div id="pagination"></div>
+    </div>
+
+    <script src="list.js"></script>
+  </body>
+</html>

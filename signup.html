@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign up</title>
+    <link rel="stylesheet" href="sign.css">
+   
+</head>
+
+<body>
+    <div id="login_form">
+        <form action="insert.php" method="post">
+            <h1>SIGN UP</h1>
+            <div id="user-details">
+                <div id="first-name">
+                    <input type="text" name="first-name" id="first-name1" maxlength="50" required
+                        placeholder="Enter firstname">
+                </div>
+                <div id="last-name">
+                    <input type="text" name="last-name" id="last-name1" maxlength="50" placeholder="Enter lastname">
+                </div>
+                <div id="username">
+                    <input type="text" name="user" id="user" placeholder="Enter username">
+                </div>
+                <div id="email">
+                    <input type="text" name="email" id="email" placeholder="Enter email">
+                </div>
+                <div id="password">
+                    <input type="password" id="password" name="password" placeholder="Enter password" required>
+                    <input type="password" id="password" name="password" placeholder="Re-enter password" required>
+                </div>
+                <div id="submit">
+                    <button type="submit">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<style>
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+
+  table,
+  th,
+  td {
+    border: 1px solid black;
+    padding: 8px;
+  }
+
+  th {
+    background-color: green;
+  }
+
+  tr:nth-child(even) td {
+    background-color: aqua;
+  }
+
+  tr:nth-child(odd) td {
+    background-color: aquamarine;
+  }
+
+
+  * {
+    color: black;
+    background-color: #ffffff;
+    font-size: large;
+  }
+
+  button {
+    background-color: green;
+  }
+
+  a {
+    margin-top: 700px;
+    padding-top: 0px;
+    margin-left: 70%;
+    font-size: x-large;
+    border: 1px solid black;
+    margin-top: 50%;
+    text-decoration: none;
+    color: black;
+    background-color: green;
+
+  }
+
+  input[type="search"] {
+    width: 40%;
+    border: 1px solid black;
+    border-radius: 3px;
+    height: 40px;
+  }
+
+  input[type="search"]:focus {
+    width: 40%;
+    border: 1px solid green;
+    border-radius: 5px;
+    height: 40px;
+  }
+
+  #div-pagination {
+    padding: 20px;
+  }
+
+  #editForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 400px;
+    margin-top: 20px;
+    margin-left: 20%;
+    border: 1px solid black;
+    padding: 30px;
+    border-radius: 10px;
+  }
+</style>
+
+<body>
+
+  <a href="index.html">Add a new facility</a><br><br>
+  <input type="search" id="searchInput" placeholder="Search here...." oninput="searchUsers()" /><br><br>
+  <div id="res"></div>
+  <table id="facilityList">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Id</th>
+        <th>Schedules</th>
+        <th>Logs</th>
+        <th>Inventory</th>
+        <th>Edit</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody class="table_body">
+      <div id="div-pagination"></div>
+
+    </tbody>
+  </table>
+  <form id="editForm">
+    <h1>Update your facility</h1>
+    <input type="hidden" id="editId">
+    <label>Schedules:</label>
+    <input type="text" placeholder="schedules" id="editSchedules">
+    <label>Inventory:</label>
+    <input type="text" placeholder="inventory" id="editInventory">
+    <label>Logs:</label>
+    <input type="text" placeholder="logs" id="editLogs">
+    <button type="submit">Update</button>
+  </form>
+  <script src="./jquery-3.7.1.min.js"></script>
+  <script>
+    $(document).ready(function () {
+
+      $('#editForm').hide();
+
+      $('#editForm').submit(function (e) {
+        e.preventDefault();
+        updateFacility();
+      });
+
+    
+
+    });
+    const bodyTable = document.querySelector(".table_body");
+    const pagination = document.querySelector("#div-pagination");
+    const input = document.querySelector("#searchInput");
+    const btnDelete = document.querySelector("#delete");
+    let currentPage = 1;
+    const rowsPerPage = 5;
+    function displayPages(totalPages) {
+      $.ajax({
+        url: "api.php",
+        type: "GET",
+        dataType: "json",
+        success: (data) => {
+          pagination.innerHTML = "";
+          for (let i = 1; i <= totalPages; i++) {
+            const btn = document.createElement("button");
+            btn.innerText = i;
+            btn.classList.add("paginationBtn");
+            if (i === currentPage) {
+              btn.classList.add("active");
+            }
+            btn.addEventListener("click", function () {
+              currentPage = i;
+              displayTableData(data);
+              displayPages(totalPages);
+            });
+            pagination.appendChild(btn);
+          }
+        },
+      });
+    }
+    $.ajax({
+      url: "api.php",
+      type: "GET",
+      dataType: "json",
+      success: function (response) {
+        displayTableData(response);
+        const totalPages = Math.ceil(response.length / rowsPerPage);
+        displayPages(totalPages);
+        console.log("Display Successfully!!");
+      },
+      error: function (xhr, status, error) {
+        console.error("failed to load the data", error);
+      },
+    });
+    function displayTableData(data) {
+      if (data.length) {
+        const startIndex = (currentPage - 1) * rowsPerPage;
+        const endIndex = startIndex + rowsPerPage;
+        const paginatedData = data.slice(startIndex, endIndex);
+        bodyTable.innerHTML = "";
+        paginatedData.forEach((facility) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+        <td><input type="checkbox" class="deleteCheckbox" data-id="${facility.id}"></td>
+            <td>${facility.id}</td>
+            <td>${facility.schedules}</td>
+            <td>${facility.logs}</td>
+            <td>${facility.inventory}</td>
+            <td><button  class="editFacilityBtn" onclick="editFacility(${facility.id})">Edit</button></td>
+            <td><button class="deleteFacilityBtn" onclick="deleteFacility(${facility.id})">Delete</button></td>
+          `;
+          bodyTable.appendChild(row);
+        });
+      } else {
+        bodyTable.innerHTML = "No data";
+      }
+    }
+    $("#delete").on("click", function () {
+      $.ajax({
+        url: "api.php",
+        type: "GET",
+        dataType: "json",
+        success: function (response) {
+          rowDelete(response);
+          console.log("Display Successfully!!");
+        },
+        error: function (xhr, status, error) {
+          console.error("failed to load the data", error);
+        },
+      });
+    });
+    function rowDelete(data) {
+      let checkboxes = document.querySelectorAll(".deleteCheckbox");
+      checkboxes.forEach((checkbox) => {
+        if (checkbox.checked) {
+          const checkId = parseInt(checkbox.getAttribute("data-id"));
+          data.splice(
+            data.findIndex((facility) => facility.id === id),
+            1
+          );
+          deleteRow(checkId);
+        }
+      });
+      displayTableData(data);
+      const totalPages = Math.ceil(data.length / rowsPerPage);
+      displayPages(totalPages);
+    }
+    function deleteRow(id) {
+      $.ajax({
+        url: "api.php",
+        type: "DELETE",
+        data: {
+          id: id,
+        },
+        success: function (response) {
+          alert("DELETED SUCCESSFULLY!!");
+        },
+        error: function (error) {
+          alert("Error occured");
+        },
+      });
+    }
+    ;
+
+
+
+    // function searchUsers() {
+    //   var input = $("#searchInput").val().toUpperCase();
+    //   var users = $(".table_body tr");
+    //   var found = false;
+
+    //   users.each(function () {
+    //     var user = $(this);
+    //     var txtValue = user.text().toUpperCase();
+
+    //     if (txtValue.includes(input)) {
+    //       user.show();
+    //       found = true;
+    //     } else {
+    //       user.hide();
+    //     }
+    //   });
+
+    //   if (!found) {
+    //     $("#res").text("No results found");
+    //   } else {
+    //     $("#res").text("");
+    //   }
+    // }
+
+
+    function searchUsers() {
+      var input = $("#searchInput").val().toLowerCase();
+
+      $.ajax({
+        url: "api.php",
+        type: "GET",
+        success: (data) => {
+       
+          const filteredData = data.filter((item) => item.inventory.includes(input) || item.logs.includes(input) || item.schedules.includes(input))
+
+         displayTableData(filteredData);
+         const totalPages =  Math.ceil(filteredData.length / rowsPerPage);
+         displayPages(totalPages);
+        }
+      })
+    }
+
+
+    function loadFacilities() {
+      $.ajax({
+        url: 'api.php',
+        type: 'GET',
+        success: function (facilities) {
+          displayFacilities(facilities);
+        },
+        error: function () {
+          console.error('Failed to load facilities.');
+        }
+      });
+    }
+
+
+
+    function deleteFacility(id) {
+      $.ajax({
+        url: 'api.php',
+        type: 'DELETE',
+        contentType: 'application/x-www-form-urlencoded',
+        data: { id: id },
+        success: function () {
+          $(".table_body").empty();
+          loadFacilities();
+        },
+        error: function () {
+          console.error('Failed to delete facility.');
+        }
+      });
+    }
+
+    function editFacility(id) {
+      $.get('api.php', function (facilitiesData) {
+        facilitiesData.forEach(function (d) {
+          if (d.id == id) {
+            $('#editId').val(d.id);
+            $('#editSchedules').val(d.schedules);
+            $('#editLogs').val(d.logs);
+            $('#editInventory').val(d.inventory);
+            $('#facilityList').hide();
+            $('#editForm').show();
+          }
+        });
+      }).fail(function () {
+        console.error('Failed to fetch facility data for editing.');
+      });
+    }
+
+    function updateFacility() {
+      let id = $('#editId').val();
+      let schedules = $('#editSchedules').val();
+      let logs = $('#editLogs').val();
+      let inventory = $('#editInventory').val();
+
+      $.ajax({
+        url: 'api.php',
+        type: 'PUT',
+        contentType: 'application/x-www-form-urlencoded',
+        data: {
+          id: id,
+          schedules: schedules,
+          logs: logs,
+          inventory: inventory
+        },
+        success: function () {
+          loadFacilities();
+          window.location.href = "facilities.html";
+        },
+        error: function () {
+          console.error('Failed to update facility.');
+        }
+      });
+    }
+
+    function clearAddForm() {
+      $('#schedules').val('');
+      $('#logs').val('');
+      $('#inventory').val('');
+    }
+
+  </script>
+</body>
+
+</html>

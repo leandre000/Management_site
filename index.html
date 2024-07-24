@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Facilities</title>
+    <link rel="stylesheet" href="index.css">
+       
+</head>
+<body>
+    <form id="addForm">
+        <label for="schedules">Maintenance schedules:</label>
+        <input type="date" id="schedules" required /><br />
+        <label for="logs">Facility:</label>
+        <input type="text" id="logs" required /><br />
+        <label for="inventory">Equipment Inventory:</label>
+        <input type="text" id="inventory" required /><br />
+        <button type="submit">Submit</button>
+    </form>
+
+    <form id="editForm" action="api.php" method="post" style="display: none;">
+        <input type="hidden" id="editId" />
+        <label for="editSchedules">Edit schedules:</label>
+        <input type="date" id="editSchedules" required /><br />
+        <label for="editLogs">Edit logs:</label>
+        <input type="text" id="editLogs" required /><br />
+        <label for="editInventory">Edit inventory:</label>
+        <input type="text" id="editInventory" required /><br />
+        <button type="button" onclick="updateFacility()">Update facility</button>
+        <button type="button" onclick="cancelEdit()">Cancel</button>
+    </form>
+
+    <script src="./jquery-3.7.1.min.js"></script>
+    <script src="mine.js"></script>
+</body>
+</html>

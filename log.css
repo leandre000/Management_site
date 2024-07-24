@@ -1,0 +1,113 @@
+*{
+    color: white;
+    font-size: small;
+    background-color: black;
+}
+
+
+
+#login_form{
+    background-color: rgb(123, 200, 98);
+    width: 30%;
+    border-radius: 20px;
+    box-shadow: rgb(16, 18, 150);
+    margin-left: 30%;
+    top: 5px;
+    height: 84vh;
+    margin-top: 4%;
+    border: 2px solid white;
+    position: relative;
+
+}
+label{
+    padding: auto;
+    margin-left: 4px;
+}
+h1{
+    text-align: center;
+    position: relative;
+    margin-top: 40px;
+    margin-bottom: 12px;
+    font-size: x-large;
+    color: blue;
+    background-color: transparent;
+}
+
+
+
+
+input[type]{
+    padding: 18px;
+    margin: 10px;
+    border-radius: 12px;
+    border: 1px solid white;
+    color: white;
+}
+a{
+text-decoration: none;
+color: blue;
+background-color: transparent;
+top: 3px;
+font-size: x-large;
+} 
+button{
+    color: blue;
+    font-size: smaller;
+    background-color:white;
+    border: none;
+    border-radius: 10px;
+    margin-left: 140px;
+    /* /* bottom: 4px; */
+    top: -5px; 
+    margin-top: 2px;
+    padding-bottom: 4px;
+    margin-bottom: 20px;
+    font-size: xx-small;
+    
+}
+button:hover{
+    transform: scale(1.5);
+    transition: 0.5ease;
+    border-radius: 10px;
+    border: 1px solid black;
+    color: blueviolet;
+    background-color: aqua;
+}
+input:hover{
+    border-radius: 15px;
+    border: 1px solid yellow;
+}
+input:active{
+    border-radius: 25px;
+    border: 1px solid yellow;
+}
+@media screen and (max-width: 800px) {
+    input {
+        width: 80%;
+    }
+form{
+    padding: 10px;
+}
+#login_form {
+    width: 60%;
+    padding-bottom: 80px;
+}
+button{
+    color: greenyellow;
+    font-size: x-large;
+    background-color:whitesmoke;
+    border: none;
+    border-radius: 40px;
+    margin-left: 20px;
+    
+    top: 50px; 
+    
+    border:1px solid orangered;
+
+
+    
+} }
+label{
+    margin-left: 10%;
+}
+
